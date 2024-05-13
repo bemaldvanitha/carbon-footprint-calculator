@@ -34,12 +34,34 @@ class Api::Category::CategoryController < ApplicationController
       processed_categories << category_data
     end
 
-
     render json: {
       status: 'SUCCESS',
       message: 'All categories fetched',
       data: processed_categories
     }, status: :ok
+  end
+
+  def delete_category
+    if user_type == "Admin"
+      category = Category.find_by(id:params[:id])
+      if category.nil?
+        render json: {
+          status: 'ERROR',
+          message: 'Category not found'
+        }, status: :not_found
+      else
+        category.destroy
+        render json: {
+          status: 'SUCCESS',
+          message: 'Category Deleted'
+        }, status: :ok
+      end
+    else
+      render json: {
+        status: 'UNAUTHORIZED',
+        message: 'Only Admin users have this function'
+      }, status: :forbidden
+    end
   end
 
   private
