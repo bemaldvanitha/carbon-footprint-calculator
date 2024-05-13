@@ -10,5 +10,8 @@ Rails.application.routes.draw do
     namespace 'file' do
       post 'generate_url', to: 'file#generate_pre_sign_url'
     end
+    namespace 'category' do
+
+    end
   end
 end

@@ -21,7 +21,7 @@ class Api::Auth::AuthController < ApplicationController
         render json: {
           status: 'SUCCESS',
           message: 'Successfully signed up!',
-          token: JwtService.generate_token({ user_id: user.id, email: user.email })
+          token: JwtService.generate_token({ user_id: user.id, email: user.email, user_type: user_type.user_type })
         }, status: :created
       else
         render json: {
@@ -34,14 +34,14 @@ class Api::Auth::AuthController < ApplicationController
   end
 
   def login
-    user = User.find_by(email: login_params[:email])
+    user = User.includes(:user_type).find_by(email: login_params[:email])
     if user
       encrypted_password = Digest::MD5.hexdigest(login_params[:password])
       if user.password == encrypted_password
         render json: {
           status: 'SUCCESS',
           message: 'Login successful!',
-          token: JwtService.generate_token({ user_id: user.id, email: user.email })
+          token: JwtService.generate_token({ user_id: user.id, email: user.email, user_type: user.user_type.user_type })
         }, status: :ok
       else
         render json: {
