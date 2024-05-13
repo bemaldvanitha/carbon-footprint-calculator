@@ -12,6 +12,7 @@ Rails.application.routes.draw do
     end
     namespace 'category' do
       post 'create', to: 'category#create_category'
+      get '', to: 'category#get_categories'
     end
   end
 end

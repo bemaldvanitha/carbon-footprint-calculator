@@ -24,10 +24,36 @@ class Api::Category::CategoryController < ApplicationController
     end
   end
 
+  def get_categories
+    categories = Category.all()
+    processed_categories = []
+
+    categories.each do |category|
+      presigned_url = generate_presigned_url(category.image)
+      category_data = category.attributes.merge({ presigned_url: presigned_url })
+      processed_categories << category_data
+    end
+
+
+    render json: {
+      status: 'SUCCESS',
+      message: 'All categories fetched',
+      data: processed_categories
+    }, status: :ok
+  end
+
   private
 
   def category_params
     params.permit(:title, :image)
+  end
+
+  def generate_presigned_url(image)
+    bucket_name = 'carbonfootprint123'
+    object_path = 'category/' + image
+    s3 = Aws::S3::Resource.new
+    obj = s3.bucket(bucket_name).object(object_path)
+    obj.presigned_url(:get, expires_in: 3600)
   end
 
   def authorize_request
