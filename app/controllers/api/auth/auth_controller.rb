@@ -37,10 +37,40 @@ class Api::Auth::AuthController < ApplicationController
     end
   end
 
+  def login
+    user = User.find_by(email: login_params[:email])
+    if user
+      encrypted_password = Digest::MD5.hexdigest(login_params[:password])
+      if user.password == encrypted_password
+        render json: {
+          status: 'SUCCESS',
+          message: 'Login successful!',
+          token: JwtService.generate_token({ user_id: user.id, email: user.email })
+        }, status: :ok
+      else
+        render json: {
+          status: 'ERROR',
+          message: 'Authentication Error!',
+          token: nil
+        }, status: :unauthorized
+      end
+    else
+      render json: {
+        status: 'ERROR',
+        message: 'Authentication Error!',
+        token: nil
+      }, status: :unauthorized
+    end
+  end
+
   private
 
   def sign_up_params
     params.permit(:email, :password, :full_name, :phone_number, :user_type, :temporary_user_id)
+  end
+
+  def login_params
+    params.permit(:email, :password)
   end
 
 end
