@@ -1,0 +1,2 @@
+class ProjectDesignValidator < ApplicationRecord
+end

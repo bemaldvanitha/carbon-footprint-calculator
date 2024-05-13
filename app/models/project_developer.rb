@@ -1,0 +1,2 @@
+class ProjectDeveloper < ApplicationRecord
+end

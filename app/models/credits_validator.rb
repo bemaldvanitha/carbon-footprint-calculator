@@ -1,0 +1,2 @@
+class CreditsValidator < ApplicationRecord
+end

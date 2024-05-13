@@ -1,0 +1,35 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  categoryId: one
+  featuredImage: MyString
+  summary: MyText
+  howItWork: MyText
+  locationId: one
+  activeSince: MyString
+  certificationTypeId: one
+  projectDeveloperId: one
+  projectDesignValidatorId: one
+  creditsValidatorId: one
+  readMore: MyString
+  totalCarbonCredits: 1
+  allocatedCarbonCredits: 1
+  offsetRate: 9.99
+
+two:
+  title: MyString
+  categoryId: two
+  featuredImage: MyString
+  summary: MyText
+  howItWork: MyText
+  locationId: two
+  activeSince: MyString
+  certificationTypeId: two
+  projectDeveloperId: two
+  projectDesignValidatorId: two
+  creditsValidatorId: two
+  readMore: MyString
+  totalCarbonCredits: 1
+  allocatedCarbonCredits: 1
+  offsetRate: 9.99
