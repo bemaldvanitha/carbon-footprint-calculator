@@ -11,7 +11,7 @@ Rails.application.routes.draw do
       post 'generate_url', to: 'file#generate_pre_sign_url'
     end
     namespace 'category' do
-
+      post 'create', to: 'category#create_category'
     end
   end
 end

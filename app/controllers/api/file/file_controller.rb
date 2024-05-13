@@ -25,7 +25,7 @@ class Api::File::FileController < ApplicationController
     else
       render json: {
         status: 'UNAUTHORIZED',
-        message: 'Only Admin users can create categories'
+        message: 'Only Admin users have this function'
       }, status: :forbidden
     end
   end
