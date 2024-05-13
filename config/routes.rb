@@ -7,5 +7,8 @@ Rails.application.routes.draw do
     namespace 'calculator' do
       post 'calculate', to: 'carbon_calculator#calculate'
     end
+    namespace 'file' do
+      post 'generate_url', to: 'file#generate_pre_sign_url'
+    end
   end
 end
