@@ -225,6 +225,35 @@ class Api::Project::ProjectController < ApplicationController
     end
   end
 
+  def delete_project
+    if user_type == 'Admin'
+      project = Project.find(params[:id])
+      if project.nil?
+        render json: {
+          status: 'ERROR',
+          message: 'No project to this id!',
+        }, status: :not_found
+      else
+        if project.destroy
+          render json: {
+            status: 'SUCCESS',
+            message: 'Project Delete successful!'
+          }, status: :ok
+        else
+          render json: {
+            status: 'ERROR',
+            message: 'Project delete failed!',
+          }, status: :bad_request
+        end
+      end
+    else
+      render json: {
+        status: 'UNAUTHORIZED',
+        message: 'Only Admin users have this function'
+      }, status: :forbidden
+    end
+  end
+
   private
 
   def project_update_params

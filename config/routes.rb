@@ -21,6 +21,7 @@ Rails.application.routes.draw do
       get 'category/:id', to: 'project#get_projects_by_category'
       get ':id', to: 'project#get_single_project'
       patch ':id', to: 'project#update_project'
+      delete ':id', to: 'project#delete_project'
     end
   end
 end

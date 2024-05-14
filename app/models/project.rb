@@ -5,7 +5,7 @@ class Project < ApplicationRecord
   belongs_to :project_developer
   belongs_to :project_design_validator
   belongs_to :credits_validator
-  has_many :project_images
-  has_many :technical_documents
+  has_many :project_images, dependent: :destroy
+  has_many :technical_documents, dependent: :destroy
   has_many :payments
 end
