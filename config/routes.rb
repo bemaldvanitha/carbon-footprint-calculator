@@ -26,5 +26,8 @@ Rails.application.routes.draw do
     namespace 'payment' do
       get 'carbon_credits', to: 'payment#required_carbon_credit_amount_generate'
     end
+    namespace 'user' do
+      get 'personal', to: 'user#get_current_user_info'
+    end
   end
 end
