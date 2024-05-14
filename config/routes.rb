@@ -23,5 +23,8 @@ Rails.application.routes.draw do
       patch ':id', to: 'project#update_project'
       delete ':id', to: 'project#delete_project'
     end
+    namespace 'payment' do
+      get 'carbon_credits', to: 'payment#required_carbon_credit_amount_generate'
+    end
   end
 end
