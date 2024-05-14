@@ -29,6 +29,7 @@ Rails.application.routes.draw do
     namespace 'user' do
       get 'personal', to: 'user#get_current_user_info'
       patch '', to: 'user#edit_user'
+      delete '', to: 'user#remove_account'
     end
   end
 end

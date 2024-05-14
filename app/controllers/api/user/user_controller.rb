@@ -69,7 +69,28 @@ class Api::User::UserController < ApplicationController
           message: 'User update failed'
         }, status: :bad_request
       end
+    end
+  end
 
+  def remove_account
+    user = User.find(user_id)
+    if user.nil?
+      render json: {
+        status: 'FAILED',
+        message: 'Fetching current user failed!'
+      }, status: :bad_request
+    else
+      if user.destroy
+        render json: {
+          status: 'SUCCESS',
+          message: 'Account deletion successful!'
+        }, status: :ok
+      else
+        render json: {
+          status: 'FAILED',
+          message: 'Deleting user failed!'
+        }, status: :bad_request
+      end
     end
   end
 
