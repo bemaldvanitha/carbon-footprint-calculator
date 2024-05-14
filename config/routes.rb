@@ -15,5 +15,8 @@ Rails.application.routes.draw do
       get '', to: 'category#get_categories'
       delete ':id', to: 'category#delete_category'
     end
+    namespace 'project' do
+      post 'create', to: 'project#create_project'
+    end
   end
 end
