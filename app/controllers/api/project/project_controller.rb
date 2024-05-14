@@ -99,6 +99,69 @@ class Api::Project::ProjectController < ApplicationController
     }, status: :ok
   end
 
+  def get_single_project
+    project = Project.includes(:certification_type, :location, :technical_documents, :project_images, :project_developer,
+                               :project_design_validator, :credits_validator).find_by(:id => params[:id])
+    if project.nil?
+      render json: {
+        status: 'ERROR',
+        message: 'No project to this id',
+        data: {}
+      }, status: :not_found
+    else
+      all_project_images = []
+      all_project_technical_docs = []
+
+      project.project_images.each do |project_img|
+        all_project_images << generate_presigned_url_for_images(project_img.image)
+      end
+
+      project.technical_documents.each do |technical_doc|
+        all_project_technical_docs << generate_presigned_url_for_documents(technical_doc.document)
+      end
+
+      single_project = {
+        id: project.id,
+        title: project.title,
+        featured_image: generate_presigned_url_for_images(project.featuredImage),
+        summary: project.summary,
+        how_it_work: project.howItWork,
+        active_since: project.activeSince,
+        read_more: project.readMore,
+        total_carbon_credits: project.totalCarbonCredits,
+        allocated_carbon_credit: project.allocatedCarbonCredits,
+        offset_rate: project.offsetRate,
+        certification_type: project.certification_type.certification_type,
+        location: {
+          title: project.location.title,
+          description: project.location.description,
+          latitude: project.location.latitude,
+          longitude: project.location.longitude
+        },
+        project_developer: {
+          name: project.project_developer.name,
+          organization: project.project_developer.organization
+        },
+        project_design_validator: {
+          name: project.project_design_validator.name,
+          organization: project.project_design_validator.organization
+        },
+        credits_validator: {
+          name: project.credits_validator.name,
+          organization: project.credits_validator.organization
+        },
+        project_images: all_project_images,
+        technical_documents: all_project_technical_docs
+      }
+
+      render json: {
+        status: 'SUCCESS',
+        message: 'Single Project Fetched Successful!',
+        data: single_project
+      }, status: :ok
+    end
+  end
+
   private
 
   def project_params
@@ -112,6 +175,14 @@ class Api::Project::ProjectController < ApplicationController
   def generate_presigned_url_for_images(image)
     bucket_name = 'carbonfootprint123'
     object_path = 'project/images/' + image
+    s3 = Aws::S3::Resource.new
+    obj = s3.bucket(bucket_name).object(object_path)
+    obj.presigned_url(:get, expires_in: 3600)
+  end
+
+  def generate_presigned_url_for_documents(document)
+    bucket_name = 'carbonfootprint123'
+    object_path = 'project/documents/' + document
     s3 = Aws::S3::Resource.new
     obj = s3.bucket(bucket_name).object(object_path)
     obj.presigned_url(:get, expires_in: 3600)
