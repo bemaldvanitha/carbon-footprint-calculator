@@ -20,6 +20,7 @@ Rails.application.routes.draw do
       get '', to: 'project#get_all_projects'
       get 'category/:id', to: 'project#get_projects_by_category'
       get ':id', to: 'project#get_single_project'
+      patch ':id', to: 'project#update_project'
     end
   end
 end
