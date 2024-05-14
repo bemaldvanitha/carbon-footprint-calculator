@@ -16,10 +16,10 @@ module AuthorizationService
           return { error: 'Token has expired!' }
         end
       else
-        return { error: 'Invalid request!' }
+        return { error: 'Invalid token!' }
       end
     else
-      return { error: 'Invalid request!' }
+      return { error: 'Invalid request missing token!' }
     end
   end
 end

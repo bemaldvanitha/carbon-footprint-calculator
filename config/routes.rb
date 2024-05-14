@@ -18,6 +18,7 @@ Rails.application.routes.draw do
     namespace 'project' do
       post 'create', to: 'project#create_project'
       get '', to: 'project#get_all_projects'
+      get 'category/:id', to: 'project#get_projects_by_category'
     end
   end
 end

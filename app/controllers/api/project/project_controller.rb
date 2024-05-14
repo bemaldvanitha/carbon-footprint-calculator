@@ -62,7 +62,7 @@ class Api::Project::ProjectController < ApplicationController
     projects.each do |project|
       project_data = {
         id: project.id,
-        image: project.featuredImage,
+        image: generate_presigned_url_for_images(project.featuredImage),
         title: project.title,
         certification_type: project.certification_type.certification_type,
         location: project.location.title
@@ -77,6 +77,28 @@ class Api::Project::ProjectController < ApplicationController
     }, status: :ok
   end
 
+  def get_projects_by_category
+    projects = Project.includes(:category, :location, :certification_type).where(:category_id => params[:id])
+    all_projects_list = []
+
+    projects.each do |project|
+      project_data = {
+        id: project.id,
+        image: generate_presigned_url_for_images(project.featuredImage),
+        title: project.title,
+        certification_type: project.certification_type.certification_type,
+        location: project.location.title
+      }
+      all_projects_list << project_data
+    end
+
+    render json: {
+      status: 'SUCCESS',
+      message: 'All project by category!',
+      data: all_projects_list
+    }, status: :ok
+  end
+
   private
 
   def project_params
@@ -85,6 +107,14 @@ class Api::Project::ProjectController < ApplicationController
       :certification_type, project_images: [], location: [:title, :description, :latitude, :longitude], technical_documents: [],
       project_developer: [:name, :organization], project_design_validator: [:name, :organization], credit_validator: [:name, :organization]
     )
+  end
+
+  def generate_presigned_url_for_images(image)
+    bucket_name = 'carbonfootprint123'
+    object_path = 'project/images/' + image
+    s3 = Aws::S3::Resource.new
+    obj = s3.bucket(bucket_name).object(object_path)
+    obj.presigned_url(:get, expires_in: 3600)
   end
 
   def authorize_request
