@@ -28,6 +28,7 @@ Rails.application.routes.draw do
     end
     namespace 'user' do
       get 'personal', to: 'user#get_current_user_info'
+      patch '', to: 'user#edit_user'
     end
   end
 end

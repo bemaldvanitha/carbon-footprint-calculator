@@ -22,7 +22,62 @@ class Api::User::UserController < ApplicationController
     end
   end
 
+  def edit_user
+    user = User.find(user_id)
+    if user.nil?
+      render json: {
+        status: 'FAILED',
+        message: 'Fetching current user failed!'
+      }, status: :bad_request
+    else
+      if edit_user_params[:email].present? && user.email != edit_user_params[:email]
+        is_email_exist = User.find_by(:email => edit_user_params[:email])
+        if !is_email_exist
+          user.email = edit_user_params[:email]
+        else
+          render json: {
+            status: 'FAILED',
+            message: 'Email address already used by other user!'
+          }, status: :not_acceptable
+        end
+      end
+
+      if edit_user_params[:phone_number].present? && user.phoneNumber != edit_user_params[:phone_number]
+        is_phone_number_exist = User.find_by(:phoneNumber => edit_user_params[:phone_number])
+        if !is_phone_number_exist
+          user.phoneNumber = edit_user_params[:phone_number]
+        else
+          render json: {
+            status: 'FAILED',
+            message: 'Phone number already used by other user!'
+          }, status: :not_acceptable
+        end
+      end
+
+      if edit_user_params[:full_name].present?
+        user.fullName = edit_user_params[:full_name]
+      end
+
+      if user.save
+        render json: {
+          status: 'SUCCESS',
+          message: 'User updated successfully!'
+        }, status: :ok
+      else
+        render json: {
+          status: 'ERROR',
+          message: 'User update failed'
+        }, status: :bad_request
+      end
+
+    end
+  end
+
   private
+
+  def edit_user_params
+    params.permit(:email, :phone_number, :full_name)
+  end
 
   def authorize_request
     authorization_data = AuthorizationService.authorize_request(request)
