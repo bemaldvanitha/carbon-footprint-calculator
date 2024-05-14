@@ -55,6 +55,28 @@ class Api::Project::ProjectController < ApplicationController
     end
   end
 
+  def get_all_projects
+    projects = Project.includes(:category, :location, :certification_type).all()
+    all_project_list = []
+
+    projects.each do |project|
+      project_data = {
+        id: project.id,
+        image: project.featuredImage,
+        title: project.title,
+        certification_type: project.certification_type.certification_type,
+        location: project.location.title
+      }
+      all_project_list << project_data
+    end
+
+    render json: {
+      status: 'SUCCESS',
+      message: 'All projects!',
+      data: all_project_list
+    }, status: :ok
+  end
+
   private
 
   def project_params

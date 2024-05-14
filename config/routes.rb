@@ -17,6 +17,7 @@ Rails.application.routes.draw do
     end
     namespace 'project' do
       post 'create', to: 'project#create_project'
+      get '', to: 'project#get_all_projects'
     end
   end
 end
