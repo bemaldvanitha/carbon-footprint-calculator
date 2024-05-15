@@ -5,6 +5,15 @@ class Api::Payment::PaymentController < ApplicationController
 
   def required_carbon_credit_amount_generate
     carbon_emission = CarbonEmission.find_by(:user_id => user_id)
+    user = User.includes(payments: :project).find(user_id)
+
+    carbon_credit_per_dollar = 0.5
+    offset_carbon_credit_count = 0
+
+    user.payments.each do |payment|
+      offset_carbon_credit_count += payment.amount * carbon_credit_per_dollar * payment.project.offsetRate
+    end
+
     if carbon_emission.nil?
       render json: {
         status: 'ERROR',
@@ -15,7 +24,8 @@ class Api::Payment::PaymentController < ApplicationController
         status: 'SUCCESS',
         message: 'You needed ' + carbon_emission.carbonEmission.to_s + " carbon credits",
         data: {
-          carbon_emission: carbon_emission.carbonEmission
+          carbon_emission: carbon_emission.carbonEmission,
+          current_offset: offset_carbon_credit_count
         }
       }, status: :ok
     end
