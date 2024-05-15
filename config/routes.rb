@@ -32,5 +32,8 @@ Rails.application.routes.draw do
       patch '', to: 'user#edit_user'
       delete '', to: 'user#remove_account'
     end
+    namespace 'admin' do
+      get 'all', to: 'admin#get_total_funding'
+    end
   end
 end
