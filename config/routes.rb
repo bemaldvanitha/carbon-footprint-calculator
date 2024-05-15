@@ -36,6 +36,7 @@ Rails.application.routes.draw do
       get 'all', to: 'admin#get_total_funding'
       get 'funding_by_project', to: 'admin#funding_by_project'
       get 'funding_by_category', to: 'admin#funding_by_category'
+      get 'funding_by_user', to: 'admin#funding_by_user'
     end
   end
 end
