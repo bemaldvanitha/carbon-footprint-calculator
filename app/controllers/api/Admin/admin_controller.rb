@@ -60,6 +60,43 @@ class Api::Admin::AdminController < ApplicationController
     end
   end
 
+  def funding_by_category
+    if user_type == 'Admin'
+      category_by_funding = []
+
+      categories = Category.includes(projects: :payments).all
+
+      categories.each do |category|
+        total_category_payment = 0
+
+        category.projects.each do |project|
+          project.payments.each do |payment|
+            total_category_payment += payment.amount
+          end
+        end
+
+        category_funding_item = {
+          name: category.title,
+          funding: total_category_payment
+        }
+
+        category_by_funding << category_funding_item
+      end
+
+      render json: {
+        status: 'SUCCESS',
+        message: 'Date fetched successfully',
+        data: category_by_funding
+      }, status: :ok
+
+    else
+      render json: {
+        status: 'UNAUTHORIZED',
+        message: 'Only Admin users have this function'
+      }, status: :forbidden
+    end
+  end
+
   private
 
   def authorize_request
