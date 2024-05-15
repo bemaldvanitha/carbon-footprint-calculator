@@ -97,6 +97,40 @@ class Api::Admin::AdminController < ApplicationController
     end
   end
 
+  def funding_by_user
+    if user_type == 'Admin'
+      user_by_funding = []
+
+      users = User.includes(:payments, :user_type).where.not(user_type: { user_type: 'Admin' })
+
+      users.each do |user|
+        total_user_payment = 0
+
+        user.payments.each do |payment|
+          total_user_payment += payment.amount
+        end
+
+        user_funding_item = {
+          id: user.id,
+          name: user.fullName,
+          funding: total_user_payment
+        }
+        user_by_funding << user_funding_item
+      end
+
+      render json: {
+        status: 'SUCCESS',
+        message: 'Date Fetched!',
+        data: user_by_funding
+      }, status: :ok
+    else
+      render json: {
+        status: 'UNAUTHORIZED',
+        message: 'Only Admin users have this function'
+      }, status: :forbidden
+    end
+  end
+
   private
 
   def authorize_request
