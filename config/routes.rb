@@ -34,6 +34,7 @@ Rails.application.routes.draw do
     end
     namespace 'admin' do
       get 'all', to: 'admin#get_total_funding'
+      get 'funding_by_project', to: 'admin#funding_by_project'
     end
   end
 end

@@ -26,6 +26,40 @@ class Api::Admin::AdminController < ApplicationController
     end
   end
 
+  def funding_by_project
+    if user_type == 'Admin'
+      project_by_funding = []
+
+      projects = Project.includes(:payments).all()
+
+      projects.each do |project|
+        total_project_payment = 0
+
+        project.payments.each do |payment|
+          total_project_payment += payment.amount
+        end
+
+        project_funding_item = {
+          name: project.title,
+          funding: total_project_payment
+        }
+
+        project_by_funding << project_funding_item
+      end
+
+      render json: {
+        status: 'SUCCESS',
+        message: 'Date fetched successfully',
+        data: project_by_funding
+      }, status: :ok
+    else
+      render json: {
+        status: 'UNAUTHORIZED',
+        message: 'Only Admin users have this function'
+      }, status: :forbidden
+    end
+  end
+
   private
 
   def authorize_request
