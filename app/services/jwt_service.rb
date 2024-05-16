@@ -3,7 +3,7 @@ require 'jwt'
 class JwtService
 
   def self.generate_token(payload)
-    expiration_time = 3.hour.from_now.to_i
+    expiration_time = 3.week.from_now.to_i
     payload[:exp] = expiration_time
     JWT.encode(payload, Rails.application.credentials.secret_key_base)
   end
