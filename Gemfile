@@ -15,6 +15,7 @@ gem "jwt"
 gem 'dotenv-rails'
 gem 'aws-sdk-s3'
 gem 'stripe'
+gem 'rack-cors', require: 'rack/cors'
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"
