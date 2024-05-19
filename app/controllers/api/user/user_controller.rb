@@ -3,7 +3,7 @@ class Api::User::UserController < ApplicationController
   attr_reader :user_id, :user_type
 
   def get_current_user_info
-    user = User.find(user_id)
+    user = User.includes(:user_type).find(user_id)
     if user.nil?
       render json: {
         status: 'FAILED',
@@ -16,7 +16,8 @@ class Api::User::UserController < ApplicationController
         data: {
           email: user.email,
           phone_number: user.phoneNumber,
-          full_name: user.fullName
+          full_name: user.fullName,
+          user_type: user.user_type.user_type
         }
       }, status: :ok
     end
