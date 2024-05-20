@@ -65,7 +65,8 @@ class Api::Project::ProjectController < ApplicationController
         image: generate_presigned_url_for_images(project.featuredImage),
         title: project.title,
         certification_type: project.certification_type.certification_type,
-        location: project.location.title
+        location: project.location.title,
+        created_at: project.created_at
       }
       all_project_list << project_data
     end
@@ -87,7 +88,8 @@ class Api::Project::ProjectController < ApplicationController
         image: generate_presigned_url_for_images(project.featuredImage),
         title: project.title,
         certification_type: project.certification_type.certification_type,
-        location: project.location.title
+        location: project.location.title,
+        created_at: project.created_at
       }
       all_projects_list << project_data
     end
@@ -176,7 +178,7 @@ class Api::Project::ProjectController < ApplicationController
           project.title = project_update_params[:title]
         end
 
-        if project_update_params[:featured_image]
+        if project_update_params[:featured_image] && project_update_params[:featured_image] != ""
           project.featuredImage = project_update_params[:featured_image]
         end
 
@@ -196,12 +198,16 @@ class Api::Project::ProjectController < ApplicationController
           project.location.update(project_update_params[:location])
         end
 
-        project_update_params[:technical_documents].each do |document|
-          doc = TechnicalDocument.create(:document => document, :project_id => project.id)
+        if project_update_params.key?(:technical_documents)
+          project_update_params[:technical_documents].each do |document|
+            doc = TechnicalDocument.create(document: document, project_id: project.id)
+          end
         end
 
-        project_update_params[:project_images].each do |image|
-          img = ProjectImage.create(:image => image, :project_id => project.id)
+        if project_update_params.key?(:project_images)
+          project_update_params[:project_images].each do |image|
+            img = ProjectImage.create(image: image, project_id: project.id)
+          end
         end
 
         if project.save
@@ -257,8 +263,8 @@ class Api::Project::ProjectController < ApplicationController
   private
 
   def project_update_params
-    params.permit(:title, :featured_image, :summary, :how_it_work, :read_more, project_images: [],
-                  location: [:title, :description, :latitude, :longitude], technical_documents: [],)
+    params.permit(:title, :featured_image, :summary, :how_it_work, :read_more, location: [:title, :description, :latitude, :longitude],
+                  project_images: [], technical_documents: [])
   end
 
   def project_params
