@@ -21,6 +21,7 @@ class Api::Auth::AuthController < ApplicationController
         render json: {
           status: 'SUCCESS',
           message: 'Successfully signed up!',
+          user_type: user_type.user_type,
           token: JwtService.generate_token({ user_id: user.id, email: user.email, user_type: user_type.user_type })
         }, status: :created
       else
@@ -41,6 +42,7 @@ class Api::Auth::AuthController < ApplicationController
         render json: {
           status: 'SUCCESS',
           message: 'Login successful!',
+          user_type: user.user_type.user_type,
           token: JwtService.generate_token({ user_id: user.id, email: user.email, user_type: user.user_type.user_type })
         }, status: :ok
       else

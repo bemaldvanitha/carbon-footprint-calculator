@@ -36,7 +36,7 @@ class Api::Payment::PaymentController < ApplicationController
     begin
       project = Project.find(payment_params[:project_id])
       is_sufficient_credits_available = (project.totalCarbonCredits - project.allocatedCarbonCredits) * project.offsetRate >
-        payment_params[:amount].to_i * carbon_credit_per_dollar
+        (payment_params[:amount].to_i / 10) * carbon_credit_per_dollar
 
       if is_sufficient_credits_available
         customer = Stripe::Customer.create(
@@ -51,10 +51,10 @@ class Api::Payment::PaymentController < ApplicationController
            description: 'Payment for carbon credits',
         })
 
-        project.allocatedCarbonCredits = payment_params[:amount].to_i * carbon_credit_per_dollar
+        project.allocatedCarbonCredits = (payment_params[:amount].to_i / 10) * carbon_credit_per_dollar
         project.save
 
-        payment = Payment.create(user_id: user_id, project_id: payment_params[:project_id], amount: payment_params[:amount],
+        payment = Payment.create(user_id: user_id, project_id: payment_params[:project_id], amount: (payment_params[:amount].to_i/ 10),
                                stripeId: customer.id, isContinues: false, isSuccess: true)
 
         render json: {
